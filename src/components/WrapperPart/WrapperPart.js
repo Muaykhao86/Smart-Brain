@@ -122,7 +122,7 @@ class ComWrapper extends Component {
                         })
                         .catch(console.log)
                     }
-                    this.displayFaceBox(this.calculateFaceLocation(response))
+                    this.displayFaceBoxes(this.calculateFaceLocation(response))
                 })
                     .catch(err => console.log(err));
             }

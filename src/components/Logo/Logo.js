@@ -8,7 +8,7 @@ const Logo = () => {
 <div className='ma4 mt0'>
     <Tilt className="Tilt br2 shadow-2" options={{ max : 60}} style={{ height: 150, width: 150 }} >
         <div className="Tilt-inner pa3">
-            <img alt='Logo' src={face} style={{paddingTop: '10px'}} />
+            <img alt='Logo' src={face} style={{}} />
         </div>
     </Tilt>
 </div>
