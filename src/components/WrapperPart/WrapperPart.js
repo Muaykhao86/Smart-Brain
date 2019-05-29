@@ -18,14 +18,14 @@ import FaceRecognition from '../FaceRecognition/FaceRecognition';
 const initialState = {
     input:'',
           imageUrl:'',
-          box:{},
+          boxes:[],
           route: 'signin',
           isSignedIn: false,
           user:{
                 id:'',
                 name:'',
                 email:'',
-                entries: '',
+                entries: 0,
                 joined: ''
           }
 }
@@ -56,7 +56,8 @@ class ComWrapper extends Component {
         // }
         
         calculateFaceLocation = (data) => {
-            const ClarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+            return data.outputs[0].data.regions.map(face => {
+            const clarifaiFace = face.region_info.bounding_box;
             const image = document.getElementById('imageInput');
             const width = Number(image.width);
             const height = Number(image.height);
@@ -65,18 +66,19 @@ class ComWrapper extends Component {
                 // Below - Im multiplying the return left_col (which is a percentage of the image)
                 // that i get back that is a % of the image where it thinks a face is
                 // then I multiply it by the total width of the image to get the lhs of the face
-                leftCol: ClarifaiFace.left_col * width,
-                topRow: ClarifaiFace.top_row * height,
-                rightCol: width - (ClarifaiFace.right_col * width),
-                bottomRow: height -(ClarifaiFace.bottom_row * height)
+                leftCol: clarifaiFace.left_col * width,
+                topRow: clarifaiFace.top_row * height,
+                rightCol: width - (clarifaiFace.right_col * width),
+                bottomRow: height -(clarifaiFace.bottom_row * height)
                 // Above - Im taking the total % minus the width of the lhs and the same for the height
                 // This way i get a grid and a pin point of where the face is from this = (x,y) (x,y)
             }
         }
+    )}
 
-        displayFaceBox = (box) => {
-            // or just ({box}) from es6
-            this.setState({box: box});
+        displayFaceBoxes = (boxes) => {
+            // or just ({boxes}) from es6
+            this.setState({boxes: boxes});
         }
     
         onInputChange = (event) => {
@@ -147,7 +149,7 @@ class ComWrapper extends Component {
                         <Logo /> 
                         <Rank name={this.state.user.name} entries={this.state.user.entries}/>
                         <ImageLinkForm onInputChange={this.onInputChange} onPictureSubmit={this.onPictureSubmit} />         
-                        <FaceRecognition box = {this.state.box} imageUrl={this.state.imageUrl} />
+                        <FaceRecognition boxes = {this.state.boxes} imageUrl={this.state.imageUrl} />
                     </div> 
                     :
                     (this.state.route ==='signin'||this.state.route === 'signout' ?
