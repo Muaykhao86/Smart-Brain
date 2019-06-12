@@ -21,6 +21,7 @@ const initialState = {
           boxes:[],
           route: 'signin',
           isSignedIn: false,
+          validUrl: true,
           user:{
                 id:'',
                 name:'',
@@ -86,7 +87,7 @@ class ComWrapper extends Component {
           }
         
         onPictureSubmit = () => {
-            this.setState({imageUrl:this.state.input}, () => this.ApiCall());}
+            this.setState({imageUrl:this.state.input, validUrl: true}, () => this.ApiCall());}
         // Advanced!!! This is to make a call back so the imageUrl has time to update before the api call 
         // see https://stackoverflow.com/questions/42038590/when-to-use-react-setstate-callback
         // https://reactjs.org/docs/react-component.html#setstate
@@ -124,7 +125,10 @@ class ComWrapper extends Component {
                     }
                     this.displayFaceBoxes(this.calculateFaceLocation(response))
                 })
-                    .catch(err => console.log(err));
+                    .catch(err => {
+                        this.setState({validUrl: false});
+                        console.log(err);
+                    });
             }
             
         onRouteChange = (route) => {
@@ -149,7 +153,7 @@ class ComWrapper extends Component {
                         <Logo /> 
                         <Rank name={this.state.user.name} entries={this.state.user.entries}/>
                         <ImageLinkForm onInputChange={this.onInputChange} onPictureSubmit={this.onPictureSubmit} />         
-                        <FaceRecognition boxes = {this.state.boxes} imageUrl={this.state.imageUrl} />
+                        <FaceRecognition validUrl={this.state.validUrl} boxes={this.state.boxes} imageUrl={this.state.imageUrl} />
                     </div> 
                     :
                     (this.state.route ==='signin'||this.state.route === 'signout' ?
